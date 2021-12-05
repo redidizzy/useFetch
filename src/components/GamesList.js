@@ -8,22 +8,21 @@ import {
 import { useSelector } from "react-redux"
 
 const GamesList = () => {
-  const games = useSelector(({ games }) => games)
-
+  const games = useSelector(({ result }) => result?.games?.value?.results)
   return (
-    <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+    <Box
+      sx={{ width: "100%", maxWidth: 360, bgcolor: "indigo", color: "white" }}
+    >
       <nav>
         <List>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemText primary="Trash" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
-              <ListItemText primary="Spam" />
-            </ListItemButton>
-          </ListItem>
+          {games &&
+            games.map((game, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton>
+                  <ListItemText primary={game.name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </nav>
     </Box>

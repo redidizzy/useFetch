@@ -42,7 +42,7 @@ export const querystring = (query = {}) => {
 }
 
 export const deleteFirstBiggestCacheElement = (result) => {
-  const cachedData = LZString.decompress(localStorage.getItem("savedData"))
+  const cachedData = compresser.decompress(localStorage.getItem("savedData"))
   const cachedSize = cachedData.length
   const newSize = JSON.stringify(result).length
   const diff = newSize - cachedSize
@@ -55,10 +55,8 @@ export const deleteFirstBiggestCacheElement = (result) => {
     const itemSize = JSON.stringify(parsedCachedData[key]).length
     if (itemSize > diff && !parsedCachedData[key].isLocked) {
       delete parsedCachedData[key]
-      localStorage.setItem(
-        "savedData",
-        LZString.compress(JSON.stringify(result))
-      )
+      const compressedResult = compresser.compress(parsedCachedData)
+      localStorage.setItem("savedData", compressedResult)
       break
     }
   }
@@ -88,7 +86,7 @@ export const compresser = {
       }
       if (timer > 200) stopCompressing = true
     }
-    return result
+    return JSON.stringify(result)
   },
   decompress(data) {
     const result = JSON.parse(data)

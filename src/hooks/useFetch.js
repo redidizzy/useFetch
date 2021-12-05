@@ -74,8 +74,7 @@ export const useFetch = (callbackFn) => {
       dispatch(ajaxActions.loadData(result))
       try {
         try {
-          const compressedResult = compresser.compress(result)
-          localStorage.setItem("savedData", JSON.stringify(compressedResult))
+          localStorage.setItem("savedData", compresser.compress(result))
         } catch (e) {
           console.log(e)
         }
@@ -90,7 +89,9 @@ export const useFetch = (callbackFn) => {
     }
     const result = localStorage.getItem("savedData")
     if (result) {
-      setCachedResult(compresser.decompress(result))
+      const decompressedResult = compresser.decompress(result)
+      dispatch(ajaxActions.loadData(decompressedResult))
+      setCachedResult(decompressedResult)
     }
     loadData()
   }, [callbackFn, dispatch])
