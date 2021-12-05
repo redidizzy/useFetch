@@ -1,3 +1,5 @@
+import LZString from "lz-string"
+
 function mapObjectToArray(obj, cb) {
   var res = []
   for (var key in obj) res.push(cb(obj[key], key))
@@ -34,4 +36,27 @@ export const querystring = (query = {}) => {
     .join("&")
 
   return qs && "?" + qs
+}
+
+export const deleteFirstBiggestCacheElement = (result) => {
+  const cachedData = LZString.decompress(localStorage.getItem("savedData"))
+  const cachedSize = cachedData.length
+  const newSize = JSON.stringify(result).length
+  const diff = newSize - cachedSize
+
+  console.error(
+    `Local storage is full, deleting first element with size bigger than diff ${diff}`
+  )
+  const parsedCachedData = JSON.parse(cachedData)
+  for (const key in parsedCachedData) {
+    const itemSize = JSON.stringify(parsedCachedData[key]).length
+    if (itemSize > diff) {
+      delete parsedCachedData[key]
+      localStorage.setItem(
+        "savedData",
+        LZString.compress(JSON.stringify(result))
+      )
+      break
+    }
+  }
 }
