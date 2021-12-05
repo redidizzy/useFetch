@@ -82,7 +82,7 @@ export const compresser = {
       } else {
         result[key] = {
           isLocked: data[key].isLocked,
-          isCompressed: true,
+          isCompressed: false,
           value: data[key].value,
         }
       }
@@ -91,6 +91,13 @@ export const compresser = {
     return result
   },
   decompress(data) {
-    //decompress
+    const result = JSON.parse(data)
+    for (const key in result) {
+      if (result[key].isCompressed) {
+        result[key].value = JSON.parse(LZString.decompress(result[key].value))
+      }
+      delete result[key].isCompressed
+    }
+    return result
   },
 }
