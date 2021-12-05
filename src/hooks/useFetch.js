@@ -3,6 +3,7 @@
  * @author Rediane Zemmouri
  */
 
+import LZString from "lz-string"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { querystring, resolveAllPromises } from "../helpers"
@@ -63,13 +64,16 @@ export const useFetch = (callbackFn) => {
         {}
       )
       dispatch(ajaxActions.loadData(result))
-      localStorage.setItem("savedData", JSON.stringify(result))
+      localStorage.setItem(
+        "savedData",
+        LZString.compress(JSON.stringify(result))
+      )
       setCachedResult(result)
       setIsLoading(false)
     }
     const result = localStorage.getItem("savedData")
     if (result) {
-      setCachedResult(JSON.parse(result))
+      setCachedResult(JSON.parse(LZString.decompress(result)))
     }
     loadData()
   }, [callbackFn, dispatch])
