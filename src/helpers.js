@@ -8,7 +8,7 @@ function mapObjectToArray(obj, cb) {
 
 export const resolveAllPromises = (promises) =>
   Promise.all(
-    mapObjectToArray(promises, async (promise, key) => {
+    mapObjectToArray(promises, async ({ promise, isLocked }, key) => {
       const response = await promise
       if (!response.ok) {
         throw new Error(
@@ -17,7 +17,10 @@ export const resolveAllPromises = (promises) =>
       }
       const value = await response.json()
       return {
-        [key]: value,
+        [key]: {
+          value,
+          isLocked,
+        },
       }
     })
   )
@@ -50,7 +53,7 @@ export const deleteFirstBiggestCacheElement = (result) => {
   const parsedCachedData = JSON.parse(cachedData)
   for (const key in parsedCachedData) {
     const itemSize = JSON.stringify(parsedCachedData[key]).length
-    if (itemSize > diff) {
+    if (itemSize > diff && !parsedCachedData[key].isLocked) {
       delete parsedCachedData[key]
       localStorage.setItem(
         "savedData",
@@ -59,4 +62,35 @@ export const deleteFirstBiggestCacheElement = (result) => {
       break
     }
   }
+}
+
+export const compresser = {
+  compress(data) {
+    let result = {}
+    let timer = 0
+    let stopCompressing = false
+    for (const key in data) {
+      const now = Date.now()
+      const compressedValue = LZString.compress(JSON.stringify(data[key].value))
+      timer += Date.now() - now
+      if (!stopCompressing) {
+        result[key] = {
+          isLocked: data[key].isLocked,
+          isCompressed: true,
+          value: compressedValue,
+        }
+      } else {
+        result[key] = {
+          isLocked: data[key].isLocked,
+          isCompressed: true,
+          value: data[key].value,
+        }
+      }
+      if (timer > 200) stopCompressing = true
+    }
+    return result
+  },
+  decompress(data) {
+    //decompress
+  },
 }

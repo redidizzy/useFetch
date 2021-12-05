@@ -7,6 +7,7 @@ import LZString from "lz-string"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import {
+  compresser,
   deleteFirstBiggestCacheElement,
   querystring,
   resolveAllPromises,
@@ -37,7 +38,10 @@ const configureAndFetch = (endpoint, params = {}) => {
     headers: config.headers,
     ...params,
   }
-  return fetch(endpoint, options)
+  return {
+    promise: fetch(endpoint, options),
+    isLocked: params.isLocked,
+  }
 }
 
 /**
@@ -69,10 +73,12 @@ export const useFetch = (callbackFn) => {
       )
       dispatch(ajaxActions.loadData(result))
       try {
-        localStorage.setItem(
-          "savedData",
-          LZString.compress(JSON.stringify(result))
-        )
+        try {
+          const compressedResult = compresser.compress(result)
+          localStorage.setItem("savedData", JSON.stringify(compressedResult))
+        } catch (e) {
+          console.log(e)
+        }
       } catch (e) {
         console.log(e)
         if (e === "QUOTA_EXCEEDED_ERR") {
@@ -84,7 +90,7 @@ export const useFetch = (callbackFn) => {
     }
     const result = localStorage.getItem("savedData")
     if (result) {
-      setCachedResult(JSON.parse(LZString.decompress(result)))
+      setCachedResult(compresser.decompress(result))
     }
     loadData()
   }, [callbackFn, dispatch])
