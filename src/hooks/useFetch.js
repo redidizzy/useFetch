@@ -4,7 +4,9 @@
  */
 
 import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
 import { resolveAllPromises } from "../helpers"
+import { ajaxActions } from "../store/ajax-slice"
 
 const config = {
   baseUrl: null,
@@ -41,6 +43,7 @@ const configureAndFetch = (endpoint) => {
 export const useFetch = (callbackFn) => {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState(null)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const loadData = async () => {
@@ -50,13 +53,15 @@ export const useFetch = (callbackFn) => {
 
       const resolvedAsArray = await resolveAllPromises(promises)
 
-      setResult(
-        resolvedAsArray.reduce((acc, curr) => ({ ...acc, ...curr }), {})
+      dispatch(
+        ajaxActions.loadData(
+          resolvedAsArray.reduce((acc, curr) => ({ ...acc, ...curr }), {})
+        )
       )
       setIsLoading(false)
     }
     loadData()
-  }, [callbackFn])
+  }, [callbackFn, dispatch])
   return [result, isLoading]
 }
 const UseFetch = {
