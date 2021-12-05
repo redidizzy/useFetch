@@ -54,7 +54,6 @@ export const useFetch = (callbackFn) => {
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true)
-
       const promises = callbackFn(configureAndFetch)
 
       const resolvedAsArray = await resolveAllPromises(promises)
@@ -68,9 +67,13 @@ export const useFetch = (callbackFn) => {
       setCachedResult(result)
       setIsLoading(false)
     }
+    const result = localStorage.getItem("savedData")
+    if (result) {
+      setCachedResult(JSON.parse(result))
+    }
     loadData()
   }, [callbackFn, dispatch])
-  return [cachedResult, isLoading]
+  return [cachedResult, !cachedResult && isLoading]
 }
 const UseFetch = {
   configure(configureFn) {

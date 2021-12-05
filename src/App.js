@@ -19,12 +19,12 @@ function App() {
       glossary: fetch("glossary.json"),
       index: fetch("index.json", {
         queryParams: { order: "label ASC" },
-        body: { age: 100 },
       }),
     }),
     []
   )
   const [result, isLoading] = useFetch(callbackFn)
+  console.log("cache", result)
   return (
     <>
       <MyFancyLoader loading={isLoading} />
