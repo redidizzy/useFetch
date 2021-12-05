@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { resolveAllPromises } from "../helpers"
+import { querystring, resolveAllPromises } from "../helpers"
 import { ajaxActions } from "../store/ajax-slice"
 
 const config = {
@@ -17,16 +17,22 @@ const config = {
   method: "GET",
 }
 
-const configureAndFetch = (endpoint) => {
+const configureAndFetch = (endpoint, params = {}) => {
   endpoint = config.baseUrl ? config.baseUrl + endpoint : endpoint
+  if (params.queryParams) {
+    endpoint += querystring(params.queryParams)
+  }
   if (config.authentificationHeader) {
     const auth = config.authentificationHeader()
     config.headers = { ...config.headers, ...auth }
   }
-  return fetch(endpoint, {
+  delete params.queryParams
+  const options = {
     method: config.method,
     headers: config.headers,
-  })
+    ...params,
+  }
+  return fetch(endpoint, options)
 }
 
 /**

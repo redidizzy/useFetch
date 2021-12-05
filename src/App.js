@@ -17,7 +17,10 @@ function App() {
   const callbackFn = useCallback(
     (fetch) => ({
       glossary: fetch("glossary.json"),
-      index: fetch("index.json"),
+      index: fetch("index.json", {
+        queryParams: { order: "label ASC" },
+        body: { age: 100 },
+      }),
     }),
     []
   )
