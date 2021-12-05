@@ -42,7 +42,7 @@ const configureAndFetch = (endpoint) => {
 
 export const useFetch = (callbackFn) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState(null)
+  const [cachedResult, setCachedResult] = useState(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -53,16 +53,18 @@ export const useFetch = (callbackFn) => {
 
       const resolvedAsArray = await resolveAllPromises(promises)
 
-      dispatch(
-        ajaxActions.loadData(
-          resolvedAsArray.reduce((acc, curr) => ({ ...acc, ...curr }), {})
-        )
+      const result = resolvedAsArray.reduce(
+        (acc, curr) => ({ ...acc, ...curr }),
+        {}
       )
+      dispatch(ajaxActions.loadData(result))
+      localStorage.setItem("savedData", JSON.stringify(result))
+      setCachedResult(result)
       setIsLoading(false)
     }
     loadData()
   }, [callbackFn, dispatch])
-  return [result, isLoading]
+  return [cachedResult, isLoading]
 }
 const UseFetch = {
   configure(configureFn) {
