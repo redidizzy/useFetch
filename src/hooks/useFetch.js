@@ -65,7 +65,7 @@ const configureAndFetch = (endpoint, params = {}) => {
 
 /**
  *
- * @param {string} callbackFn
+ * @param {function} callbackFn
  * @param {string} storeKey
  *
  * @returns {returnType}
