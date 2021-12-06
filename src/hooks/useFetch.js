@@ -4,7 +4,7 @@
  */
 
 import LZString from "lz-string"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import {
   compresser,
@@ -59,43 +59,43 @@ export const useFetch = (callbackFn) => {
   const [isLoading, setIsLoading] = useState(false)
   const [cachedResult, setCachedResult] = useState(null)
   const dispatch = useDispatch()
+  const loadData = useCallback(async () => {
+    setCachedResult(null)
+    setIsLoading(true)
+    const promises = callbackFn(configureAndFetch)
 
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true)
-      const promises = callbackFn(configureAndFetch)
+    const resolvedAsArray = await resolveAllPromises(promises)
 
-      const resolvedAsArray = await resolveAllPromises(promises)
-
-      const result = resolvedAsArray.reduce(
-        (acc, curr) => ({ ...acc, ...curr }),
-        {}
-      )
-      dispatch(ajaxActions.loadData(result))
+    const result = resolvedAsArray.reduce(
+      (acc, curr) => ({ ...acc, ...curr }),
+      {}
+    )
+    dispatch(ajaxActions.loadData(result))
+    try {
       try {
-        try {
-          localStorage.setItem("savedData", compresser.compress(result))
-        } catch (e) {
-          console.log(e)
-        }
+        localStorage.setItem("savedData", compresser.compress(result))
       } catch (e) {
         console.log(e)
-        if (e === "QUOTA_EXCEEDED_ERR") {
-          deleteFirstBiggestCacheElement(result)
-        }
       }
-      setCachedResult(result)
-      setIsLoading(false)
+    } catch (e) {
+      console.log(e)
+      if (e === "QUOTA_EXCEEDED_ERR") {
+        deleteFirstBiggestCacheElement(result)
+      }
     }
+    setCachedResult(result)
+    setIsLoading(false)
+    return result
+  }, [callbackFn, dispatch])
+  useEffect(() => {
     const result = localStorage.getItem("savedData")
     if (result) {
       const decompressedResult = compresser.decompress(result)
       dispatch(ajaxActions.loadData(decompressedResult))
       setCachedResult(decompressedResult)
     }
-    loadData()
-  }, [callbackFn, dispatch])
-  return [cachedResult, !cachedResult && isLoading]
+  }, [dispatch])
+  return [cachedResult, !cachedResult && isLoading, loadData]
 }
 const UseFetch = {
   configure(configureFn) {

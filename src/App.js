@@ -1,3 +1,4 @@
+import { Button } from "@mui/material"
 import { useCallback } from "react"
 import "./App.css"
 import GamesList from "./components/GamesList"
@@ -106,10 +107,11 @@ function App() {
     }),
     []
   )
-  const [result, isLoading] = useFetch(callbackFn)
+  const [result, isLoading, rerun] = useFetch(callbackFn)
   return (
     <>
       <MyFancyLoader loading={isLoading} />
+      <Button onClick={rerun}>Reload</Button>
       <GamesList />
     </>
   )
