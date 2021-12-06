@@ -1,11 +1,26 @@
+/**
+ * @file Helper functions
+ * @author Rediane Zemmouri
+ */
 import LZString from "lz-string"
 
+/**
+ *
+ * @param {Object} obj
+ * @param {function} cb
+ * @returns {Array}
+ */
 function mapObjectToArray(obj, cb) {
   var res = []
   for (var key in obj) res.push(cb(obj[key], key))
   return res
 }
 
+/**
+ *
+ * @param {Promise[]} promises
+ * @returns {Object}
+ */
 export const resolveAllPromises = (promises) =>
   Promise.all(
     mapObjectToArray(promises, async ({ promise, isLocked }, key) => {
@@ -24,6 +39,11 @@ export const resolveAllPromises = (promises) =>
       }
     })
   )
+/**
+ *
+ * @param {Object} query query parameters object
+ * @returns {string} stringified version of query
+ */
 export const querystring = (query = {}) => {
   // get array of key value pairs ([[k1, v1], [k2, v2]])
   const qs = Object.entries(query)
@@ -40,17 +60,24 @@ export const querystring = (query = {}) => {
 
   return qs && "?" + qs
 }
-
+/**
+ *
+ * @param {Object} result
+ */
 export const deleteFirstBiggestCacheElement = (result) => {
   const cachedData = compresser.decompress(localStorage.getItem("savedData"))
   const cachedSize = cachedData.length
   const newSize = JSON.stringify(result).length
+
+  // The difference between the size of the new result and the size of the cache is what we'll use
   const diff = newSize - cachedSize
 
   console.error(
     `Local storage is full, deleting first element with size bigger than diff ${diff}`
   )
+
   const parsedCachedData = JSON.parse(cachedData)
+  // Delete the first element whose size is bigger than diff and that is not locked
   for (const key in parsedCachedData) {
     const itemSize = JSON.stringify(parsedCachedData[key]).length
     if (itemSize > diff && !parsedCachedData[key].isLocked) {
@@ -63,6 +90,11 @@ export const deleteFirstBiggestCacheElement = (result) => {
 }
 
 export const compresser = {
+  /**
+   *
+   * @param {Object} data
+   * @returns {string}
+   */
   compress(data) {
     let result = {}
     let timer = 0
@@ -88,6 +120,11 @@ export const compresser = {
     }
     return JSON.stringify(result)
   },
+  /**
+   *
+   * @param {string} data
+   * @returns {object}
+   */
   decompress(data) {
     const result = JSON.parse(data)
     for (const key in result) {
