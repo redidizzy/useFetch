@@ -4,6 +4,8 @@ This project represents my take on the useFetch hook which is a hook that is mea
 
 The hook stores the data return by the multiple endpoints passed to it in a redux store. It also compresses it and saves it in the local storage of the browser for caching purposes.
 
+prod : https://use-fetch-1l3ro6d0y-redidizzy.vercel.app
+
 ## Documentation
 
 ### useFetch
