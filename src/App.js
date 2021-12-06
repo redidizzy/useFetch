@@ -21,7 +21,7 @@ function App() {
     }),
     []
   )
-  const [result, isLoading] = useFetch(callbackFn)
+  const [, isLoading] = useFetch(callbackFn)
   return (
     <>
       <MyFancyLoader loading={isLoading} />
