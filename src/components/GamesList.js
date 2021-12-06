@@ -10,15 +10,12 @@ import { useSelector } from "react-redux"
 import { useFetch } from "../hooks/useFetch"
 
 const GamesList = () => {
-  const games = useSelector(
-    ({ result: { store1 } }) => store1?.games?.value?.results
-  )
+  const games = useSelector(({ result }) => result?.store1?.games?.value)
   const callbackFn = useCallback(
     (fetch) => ({
-      developers: fetch("developers", {
+      singleGame: fetch("game", {
         queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
+          id: "452",
         },
       }),
     }),
@@ -35,7 +32,7 @@ const GamesList = () => {
             games.map((game, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  <ListItemText primary={game.name} />
+                  <ListItemText primary={game.title} />
                 </ListItemButton>
               </ListItem>
             ))}

@@ -34,7 +34,7 @@ const config = {
  * Prepare fetch promise by configuring it according to config and adding options
  * @param {string} endpoint
  * @param {Object} params
- * @returns {PromiseObject}
+ * @returns {Promise}
  */
 const configureAndFetch = (endpoint, params = {}) => {
   // If baseUrl is given, prepend it to endpoint
@@ -91,7 +91,7 @@ export const useFetch = (callbackFn, storeKey = "store1") => {
       )
       dispatch(ajaxActions.loadData({ result, storeKey }))
       try {
-        console.log(e)
+        localStorage.setItem(storeKey, compresser.compress(result))
       } catch (e) {
         console.log(e)
         if (e === "QUOTA_EXCEEDED_ERR") {
