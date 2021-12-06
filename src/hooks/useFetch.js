@@ -91,11 +91,7 @@ export const useFetch = (callbackFn, storeKey = "store1") => {
       )
       dispatch(ajaxActions.loadData({ result, storeKey }))
       try {
-        try {
-          localStorage.setItem(storeKey, compresser.compress(result))
-        } catch (e) {
-          console.log(e)
-        }
+        console.log(e)
       } catch (e) {
         console.log(e)
         if (e === "QUOTA_EXCEEDED_ERR") {
