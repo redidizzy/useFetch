@@ -10,7 +10,6 @@
  * @type {array}
  * @property {Object[] | Object} 0 - results of fetch query
  * @property {boolean} 1 - loading state of fetch query
- * @property {function} 2 - Function to launch all fetch promises at once
  */
 
 import { useEffect, useState } from "react"
@@ -66,7 +65,7 @@ const configureAndFetch = (endpoint, params = {}) => {
 
 /**
  *
- * @param {string} endpoint
+ * @param {function} callbackFn
  *
  * @returns {returnType}
  */
