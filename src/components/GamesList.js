@@ -8,7 +8,7 @@ import {
 import { useSelector } from "react-redux"
 
 const GamesList = () => {
-  const games = useSelector(({ result }) => result?.games?.value?.results)
+  const games = useSelector(({ result }) => result?.games?.value)
   return (
     <Box
       sx={{ width: "100%", maxWidth: 360, bgcolor: "indigo", color: "white" }}
@@ -19,7 +19,7 @@ const GamesList = () => {
             games.map((game, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
-                  <ListItemText primary={game.name} />
+                  <ListItemText primary={game.title} />
                 </ListItemButton>
               </ListItem>
             ))}
