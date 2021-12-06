@@ -17,12 +17,6 @@ UseFetch.configure((config) => {
 function App() {
   const callbackFn = useCallback(
     (fetch) => ({
-      developers: fetch("developers", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
-        },
-      }),
       games: fetch("games", {
         queryParams: {
           key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
@@ -30,78 +24,6 @@ function App() {
         },
         // This will serve for avoiding to delete the entry when clearing cache in deleteFirstBiggestCacheElement
         isLocked: true,
-      }),
-      games1: fetch("games", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 40,
-        },
-      }),
-      games2: fetch("games", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 40,
-        },
-      }),
-      games3: fetch("games", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 40,
-        },
-      }),
-      games4: fetch("games", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 40,
-        },
-      }),
-      games5: fetch("games", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 40,
-        },
-      }),
-      games6: fetch("games", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 40,
-        },
-      }),
-      genres: fetch("genres", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
-        },
-      }),
-      platforms: fetch("platforms", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
-        },
-      }),
-      publishers: fetch("publishers", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
-        },
-      }),
-      stores: fetch("stores", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
-        },
-      }),
-      tags: fetch("tags", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
-        },
-      }),
-      creators: fetch("creators", {
-        queryParams: {
-          key: "deb1a3cbc7f44df59dbfb2a7934ea9e8",
-          page_size: 500,
-        },
       }),
     }),
     []

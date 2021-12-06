@@ -55,7 +55,8 @@ const configureAndFetch = (endpoint, params = {}) => {
  * @returns {returnType}
  */
 
-export const useFetch = (callbackFn) => {
+export const useFetch = (callbackFn, storeKey = "store1") => {
+  console.log(storeKey)
   const [isLoading, setIsLoading] = useState(false)
   const [cachedResult, setCachedResult] = useState(null)
   const dispatch = useDispatch()
@@ -71,10 +72,10 @@ export const useFetch = (callbackFn) => {
         (acc, curr) => ({ ...acc, ...curr }),
         {}
       )
-      dispatch(ajaxActions.loadData(result))
+      dispatch(ajaxActions.loadData({ result, storeKey }))
       try {
         try {
-          localStorage.setItem("savedData", compresser.compress(result))
+          localStorage.setItem(storeKey, compresser.compress(result))
         } catch (e) {
           console.log(e)
         }
@@ -87,10 +88,10 @@ export const useFetch = (callbackFn) => {
       setCachedResult(result)
       setIsLoading(false)
     }
-    const result = localStorage.getItem("savedData")
+    const result = localStorage.getItem(storeKey)
     if (result) {
       const decompressedResult = compresser.decompress(result)
-      dispatch(ajaxActions.loadData(decompressedResult))
+      dispatch(ajaxActions.loadData({ result: decompressedResult, storeKey }))
       setCachedResult(decompressedResult)
     }
     loadData()

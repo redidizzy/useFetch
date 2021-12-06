@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-  result: null,
+  result: {},
 }
 
 const ajaxSlice = createSlice({
@@ -9,7 +9,7 @@ const ajaxSlice = createSlice({
   initialState,
   reducers: {
     loadData(store, { payload }) {
-      store.result = payload
+      store.result[payload.storeKey] = payload.result
     },
   },
 })
